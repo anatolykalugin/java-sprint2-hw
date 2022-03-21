@@ -1,21 +1,22 @@
+package com.practicum.tasks;
+
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Task {
 
     protected String name;
     protected String description;
-    int id;
-    String status;
+    private final int id;
+    private String status;
 
     public void setStatus(String status) {
         this.status = status;
     }
 
-
     public String getStatus() {
         return status;
     }
-
 
     @Override
     public String toString() {
@@ -24,8 +25,6 @@ public class Task {
                 ", id - " + id +
                 ", Статус: " + status;
     }
-
-
 
     public Task(String name, String description, int id, String status) {
         this.name = name;
@@ -48,5 +47,16 @@ public class Task {
         return task;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && name.equals(task.name) && Objects.equals(description, task.description) && status.equals(task.status);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, id, status);
+    }
 }

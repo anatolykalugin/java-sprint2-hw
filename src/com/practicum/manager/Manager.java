@@ -1,7 +1,13 @@
+package com.practicum.manager;
+
+import com.practicum.tasks.Epic;
+import com.practicum.tasks.Subtask;
+import com.practicum.tasks.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
 
 public class Manager {
 
@@ -12,7 +18,6 @@ public class Manager {
 
     public static void main(String[] args) {
 
-        String[] status = {"New", "In Progress", "Done"};
         int id = 0;
         Scanner scanner = new Scanner(System.in);
 
@@ -21,19 +26,19 @@ public class Manager {
             int command = scanner.nextInt();
             switch (command) {
                 case 1:
-                    Object task = Task.createTask(id, status[0]);
+                    Object task = Task.createTask(id, Status.NEW.getStatus());
                     taskMap.put(id, task);
                     id++;
                     break;
                 case 2:
-                    Object epic = Epic.createEpic(id, status[0]);
+                    Object epic = Epic.createEpic(id, Status.NEW.getStatus());
                     epicMap.put(id, epic);
                     id++;
                     while (true) {
                         System.out.println("Хотите добавить подзадачу? 1 - Да, 0 - Нет");
                         int command2 = scanner.nextInt();
                         if (command2 == 1) {
-                            Object subtask = Subtask.createSubtask(id, status[0]);
+                            Object subtask = Subtask.createSubtask(id, Status.NEW.getStatus());
                             subMap.put(id, subtask);
                             List<Object> subArray = new ArrayList<>();
                             if (epicTasks.containsKey(epic)) {
@@ -96,9 +101,18 @@ public class Manager {
                     if (searchForTask(i) == null) {
                         System.out.println("Нет задачи с таким идентификатором");
                     } else {
-                        System.out.println("Обновите статус 0-2");
-                        int newStatus = scanner.nextInt();
-                        updateTask(i, status[newStatus]);
+                        System.out.println("Введите обновленный статус (новое / делаю / выполнено):");
+                        String newStatus = scanner.next().toLowerCase();
+                        if (newStatus.equals(Status.NEW.getStatus())) {
+                            updateTask(i, Status.NEW.getStatus());
+                        } else if (newStatus.equals(Status.IN_PROGRESS.getStatus())) {
+                            updateTask(i, Status.IN_PROGRESS.getStatus());
+                        } else if ((newStatus.equals(Status.DONE.getStatus()))) {
+                            updateTask(i, Status.DONE.getStatus());
+                        } else {
+                            System.out.println("Введен неверный статус. Попробуйте снова");
+                            break;
+                        }
                     }
                     break;
                 case 8:
@@ -113,7 +127,6 @@ public class Manager {
             }
         }
     }
-
 
     public static void printMenu() {
         System.out.println("Введите нужную цифру");
@@ -155,7 +168,7 @@ public class Manager {
                 if (isEqual) {
                     ((Epic)searchForEpic(sub1)).setStatus(status);
                 } else {
-                    ((Epic)searchForEpic(sub1)).setStatus("In Progress");
+                    ((Epic)searchForEpic(sub1)).setStatus("в процессе");
                 }
             }
         }

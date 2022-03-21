@@ -1,3 +1,5 @@
+package com.practicum.tasks;
+
 import java.util.Scanner;
 
 public class Subtask extends Task {
@@ -18,6 +20,5 @@ public class Subtask extends Task {
         System.out.println("Подзадача добавлена!");
         return subtask;
     }
-
 
 }
