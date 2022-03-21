@@ -168,7 +168,7 @@ public class Manager {
                 if (isEqual) {
                     ((Epic)searchForEpic(sub1)).setStatus(status);
                 } else {
-                    ((Epic)searchForEpic(sub1)).setStatus("в процессе");
+                    ((Epic)searchForEpic(sub1)).setStatus(Status.IN_PROGRESS.getStatus());
                 }
             }
         }
