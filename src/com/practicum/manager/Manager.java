@@ -11,10 +11,10 @@ import java.util.Scanner;
 
 public class Manager {
 
-    static HashMap<Integer, Object> taskMap = new HashMap<>();
-    static HashMap<Integer, Object> epicMap = new HashMap<>();
-    static HashMap<Integer, Object> subMap = new HashMap<>();
-    static HashMap<Object, List<Object>> epicTasks = new HashMap<>();
+    static HashMap<Integer, Task> taskMap = new HashMap<>();
+    static HashMap<Integer, Epic> epicMap = new HashMap<>();
+    static HashMap<Integer, Subtask> subMap = new HashMap<>();
+    static HashMap<Epic, List<Subtask>> epicTasks = new HashMap<>();
 
     public static void main(String[] args) {
 
@@ -26,21 +26,21 @@ public class Manager {
             int command = scanner.nextInt();
             switch (command) {
                 case 1:
-                    Object task = Task.createTask(id, Status.NEW.getStatus());
+                    Task task = Task.createTask(id, Status.NEW.getStatus());
                     taskMap.put(id, task);
                     id++;
                     break;
                 case 2:
-                    Object epic = Epic.createEpic(id, Status.NEW.getStatus());
+                    Epic epic = Epic.createEpic(id, Status.NEW.getStatus());
                     epicMap.put(id, epic);
                     id++;
                     while (true) {
                         System.out.println("Хотите добавить подзадачу? 1 - Да, 0 - Нет");
                         int command2 = scanner.nextInt();
                         if (command2 == 1) {
-                            Object subtask = Subtask.createSubtask(id, Status.NEW.getStatus());
+                            Subtask subtask = Subtask.createSubtask(id, Status.NEW.getStatus());
                             subMap.put(id, subtask);
-                            List<Object> subArray = new ArrayList<>();
+                            List<Subtask> subArray = new ArrayList<>();
                             if (epicTasks.containsKey(epic)) {
                                 subArray = epicTasks.get(epic);
                             }
@@ -56,11 +56,11 @@ public class Manager {
                     break;
                 case 3:
                     System.out.println("Список задач:");
-                    showEverything(taskMap);
+                    showEveryTask(taskMap);
                     System.out.println("Список эпиков:");
-                    showEverything(epicMap);
+                    showEveryEpic(epicMap);
                     System.out.println("Список подзадач:");
-                    showEverything(subMap);
+                    showEverySub(subMap);
                     break;
                 case 4:
                     System.out.println("Какую категорию вы хотите очистить?");
@@ -145,37 +145,40 @@ public class Manager {
         if (taskMap.containsKey(id)) {
             taskMap.put(id, Task.createTask(id, status));
         } else if (epicMap.containsKey(id)) {
-            List<Object> objArray = epicTasks.get(searchForEpic(searchForTask(id)));
-            Object epic = Epic.createEpic(id, status);
+            List<Subtask> subArray = epicTasks.get((Epic) searchForTask(id));
+            Epic epic = Epic.createEpic(id, status);
             epicMap.put(id, epic);
-            epicTasks.remove(searchForEpic(searchForTask(id)));
-            epicTasks.put(epic, objArray);
+            epicTasks.remove((Epic) searchForTask(id));
+            epicTasks.put(epic, subArray);
         } else if (subMap.containsKey(id)) {
-            Object subTest = searchForTask(id);
-            Object sub1 = Subtask.createSubtask(id,status);
-            subMap.put(id, sub1);
-            if (searchForEpic(subTest) != null) {
-                List<Object> objArray = epicTasks.get(searchForEpic(subTest));
-                objArray.remove(subTest);
-                objArray.add(sub1);
+            Subtask subToReplace = (Subtask) searchForTask(id);
+            Subtask subNew = Subtask.createSubtask(id,status);
+            subMap.put(id, subNew);
+            if (searchForEpic(subToReplace) != null) {
+                Epic epic1 = searchForEpic(subToReplace);
+                List<Subtask> subArray2 = epicTasks.get(searchForEpic(subToReplace));
+                subArray2.add(subNew);
+                subArray2.remove(subToReplace);
                 boolean isEqual = true;
-                for (Object obj : objArray) {
-                    if (!((Subtask)obj).getStatus().equals(status)) {
+                for (Subtask obj : subArray2) {
+                    if (!(obj).getStatus().equals(status)) {
                         isEqual = false;
                         break;
                     }
                 }
                 if (isEqual) {
-                    ((Epic)searchForEpic(sub1)).setStatus(status);
+                    epic1.setStatus(status);
                 } else {
-                    ((Epic)searchForEpic(sub1)).setStatus(Status.IN_PROGRESS.getStatus());
+                    epic1.setStatus(Status.IN_PROGRESS.getStatus());
                 }
+                epicTasks.remove(epic1);
+                epicTasks.put(epic1, subArray2);
             }
         }
     }
 
-    public static Object searchForEpic(Object subtask) {
-        for (Object key : epicTasks.keySet()) {
+    public static Epic searchForEpic(Subtask subtask) {
+        for (Epic key : epicTasks.keySet()) {
             if (epicTasks.get(key).contains(subtask)) {
                 return key;
             }
@@ -183,9 +186,21 @@ public class Manager {
         return null;
     }
 
-    public static void showEverything(HashMap<Integer, Object> taskList) {
+    public static void showEveryTask(HashMap<Integer, Task> taskList) {
         for (Integer i : taskList.keySet()) {
             System.out.println(taskList.get(i));
+        }
+    }
+
+    public static void showEveryEpic(HashMap<Integer, Epic> epicList) {
+        for (Integer i : epicList.keySet()) {
+            System.out.println(epicList.get(i));
+        }
+    }
+
+    public static void showEverySub(HashMap<Integer, Subtask> subList) {
+        for (Integer i : subList.keySet()) {
+            System.out.println(subList.get(i));
         }
     }
 
@@ -214,8 +229,8 @@ public class Manager {
     }
 
     public static void showSubs(int i) {
-        if (epicTasks.containsKey(searchForTask(i))) {
-            System.out.println(epicTasks.get(searchForTask(i)));
+        if (epicTasks.containsKey((Epic) searchForTask(i))) {
+            System.out.println(epicTasks.get((Epic) searchForTask(i)));
         }
     }
 }

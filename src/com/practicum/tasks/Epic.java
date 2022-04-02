@@ -8,7 +8,7 @@ public class Epic extends Task {
         super(name, description, id, status);
     }
 
-    public static Object createEpic(int id, String status) {
+    public static Epic createEpic(int id, String status) {
         Scanner epicScanner = new Scanner(System.in);
         System.out.println("Введите название эпика");
         String name = epicScanner.next();

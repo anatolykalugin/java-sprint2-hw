@@ -8,7 +8,7 @@ public class Subtask extends Task {
         super(name, description, id, status);
     }
 
-    public static Object createSubtask(int id, String status) {
+    public static Subtask createSubtask(int id, String status) {
         Scanner subScanner = new Scanner(System.in);
         System.out.println("Введите название подзадачи");
         String name = subScanner.next();

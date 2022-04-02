@@ -33,7 +33,7 @@ public class Task {
         this.status = status;
     }
 
-    public static Object createTask(int id, String status) {
+    public static Task createTask(int id, String status) {
 
         Scanner taskScanner = new Scanner(System.in);
         System.out.println("Введите название задачи");
