@@ -9,12 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-public class Manager {
+public class InMemoryTaskManager {
 
     static HashMap<Integer, Task> taskMap = new HashMap<>();
     static HashMap<Integer, Epic> epicMap = new HashMap<>();
     static HashMap<Integer, Subtask> subMap = new HashMap<>();
     static HashMap<Epic, List<Subtask>> epicTasks = new HashMap<>();
+    static List<Object> searchHistory = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -88,6 +89,7 @@ public class Manager {
                         System.out.println("Нет задачи с таким идентификатором");
                     } else {
                         System.out.println(searchForTask(command4));
+                        addHistory(searchForTask(command4));
                     }
                     break;
                 case 6:
@@ -120,6 +122,9 @@ public class Manager {
                     int command6 = scanner.nextInt();
                     showSubs(command6);
                     break;
+                case 9:
+                    showHistory();
+                    break;
                 case 0:
                     return;
                 default:
@@ -138,6 +143,7 @@ public class Manager {
         System.out.println("6 - Удалить задачу по идентификатору");
         System.out.println("7 - Обновить задачу по идентификатору");
         System.out.println("8 - Просмотреть подзадачи конкретного эпика");
+        System.out.println("9 - Просмотреть историю поиска задач");
         System.out.println("0 - Выйти из программы");
     }
 
@@ -232,5 +238,16 @@ public class Manager {
         if (epicTasks.containsKey((Epic) searchForTask(i))) {
             System.out.println(epicTasks.get((Epic) searchForTask(i)));
         }
+    }
+
+    public static void addHistory(Object obj) {
+        if (searchHistory.size() >= 10) {
+            searchHistory.remove(0);
+        }
+        searchHistory.add(obj);
+    }
+
+    public static void showHistory() {
+        System.out.println(searchHistory);
     }
 }
