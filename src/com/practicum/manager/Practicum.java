@@ -12,8 +12,7 @@ public class Practicum {
 
     public static void main(String[] args) {
 
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = Managers.getDefault();
 
         int id = 0;
         Scanner scanner = new Scanner(System.in);
@@ -85,7 +84,7 @@ public class Practicum {
                         System.out.println("Нет задачи с таким идентификатором");
                     } else {
                         System.out.println(taskManager.searchForTask(command4));
-                        historyManager.addHistory(taskManager.searchForTask(command4));
+                        taskManager.historyManager.addHistory(taskManager.searchForTask(command4));
                     }
                     break;
                 case 6:
@@ -119,7 +118,7 @@ public class Practicum {
                     taskManager.showSubs(command6);
                     break;
                 case 9:
-                    historyManager.showHistory();
+                    taskManager.historyManager.showHistory();
                     break;
                 case 0:
                     return;

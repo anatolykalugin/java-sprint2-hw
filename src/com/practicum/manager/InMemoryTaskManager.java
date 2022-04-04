@@ -14,6 +14,8 @@ public class InMemoryTaskManager implements TaskManager{
     HashMap<Integer, Subtask> subMap = new HashMap<>();
     HashMap<Epic, List<Subtask>> epicTasks = new HashMap<>();
 
+    InMemoryHistoryManager historyManager = Managers.getDefaultHistory();
+
     @Override
     public void printMenu() {
         System.out.println("Введите нужную цифру");

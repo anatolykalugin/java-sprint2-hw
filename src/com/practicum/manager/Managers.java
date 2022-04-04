@@ -1,11 +1,11 @@
 package com.practicum.manager;
 
-public final class Managers {
+public class Managers {
 
-    private static final InMemoryHistoryManager searchHistory = new InMemoryHistoryManager();
-    private static final TaskManager taskManager = new InMemoryTaskManager();
+    public static InMemoryHistoryManager searchHistory = new InMemoryHistoryManager();
+    public static InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
-    public static TaskManager getDefault(){
+    public static InMemoryTaskManager getDefault(){
         return taskManager;
     }
 
