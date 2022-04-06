@@ -12,4 +12,10 @@ public interface TaskManager {
 
     Object searchForTask(int i);
 
+    void showEverything();
+
+    void createSomething(int i, int id);
+
+    void clearCategory(int i);
+
 }

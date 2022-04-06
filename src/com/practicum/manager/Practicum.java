@@ -1,18 +1,13 @@
 package com.practicum.manager;
 
-import com.practicum.tasks.Epic;
-import com.practicum.tasks.Subtask;
-import com.practicum.tasks.Task;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Practicum {
 
     public static void main(String[] args) {
 
-        InMemoryTaskManager taskManager = Managers.getDefault();
+        TaskManager taskManager = Managers.getDefault();
+        HistoryManager searchHistory = Managers.getDefaultHistory();
 
         int id = 0;
         Scanner scanner = new Scanner(System.in);
@@ -22,26 +17,17 @@ public class Practicum {
             int command = scanner.nextInt();
             switch (command) {
                 case 1:
-                    Task task = Task.createTask(id, Status.NEW.getStatus());
-                    taskManager.taskMap.put(id, task);
+                    taskManager.createSomething(1, id);
                     id++;
                     break;
                 case 2:
-                    Epic epic = Epic.createEpic(id, Status.NEW.getStatus());
-                    taskManager.epicMap.put(id, epic);
+                    taskManager.createSomething(2, id);
                     id++;
                     while (true) {
                         System.out.println("Хотите добавить подзадачу? 1 - Да, 0 - Нет");
                         int command2 = scanner.nextInt();
                         if (command2 == 1) {
-                            Subtask subtask = Subtask.createSubtask(id, Status.NEW.getStatus());
-                            taskManager.subMap.put(id, subtask);
-                            List<Subtask> subArray = new ArrayList<>();
-                            if (taskManager.epicTasks.containsKey(epic)) {
-                                subArray = taskManager.epicTasks.get(epic);
-                            }
-                            subArray.add(subtask);
-                            taskManager.epicTasks.put(epic, subArray);
+                            taskManager.createSomething(3, id);
                             id++;
                         } else if (command2 == 0) {
                             break;
@@ -51,26 +37,18 @@ public class Practicum {
                     }
                     break;
                 case 3:
-                    System.out.println("Список задач:");
-                    taskManager.showEveryTask(taskManager.taskMap);
-                    System.out.println("Список эпиков:");
-                    taskManager.showEveryEpic(taskManager.epicMap);
-                    System.out.println("Список подзадач:");
-                    taskManager.showEverySub(taskManager.subMap);
+                    taskManager.showEverything();
                     break;
                 case 4:
                     System.out.println("Какую категорию вы хотите очистить?");
                     System.out.println("1 - задачи, 2 - эпики с подзадачами, 3 - только подзадачи");
                     int command3 = scanner.nextInt();
                     if (command3 == 1) {
-                        taskManager.taskMap.clear();
+                        taskManager.clearCategory(1);
                     } else if (command3 == 2) {
-                        taskManager.epicMap.clear();
-                        taskManager.subMap.clear();
-                        taskManager.epicTasks.clear();
+                        taskManager.clearCategory(2);
                     } else if (command3 == 3) {
-                        taskManager.subMap.clear();
-                        taskManager.epicTasks.clear();
+                        taskManager.clearCategory(3);
                     } else if (command3 == 0) {
                         break;
                     } else {
@@ -84,7 +62,7 @@ public class Practicum {
                         System.out.println("Нет задачи с таким идентификатором");
                     } else {
                         System.out.println(taskManager.searchForTask(command4));
-                        taskManager.historyManager.addHistory(taskManager.searchForTask(command4));
+                        searchHistory.addHistory(taskManager.searchForTask(command4));
                     }
                     break;
                 case 6:
@@ -118,7 +96,7 @@ public class Practicum {
                     taskManager.showSubs(command6);
                     break;
                 case 9:
-                    taskManager.historyManager.showHistory();
+                    searchHistory.showHistory();
                     break;
                 case 0:
                     return;

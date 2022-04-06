@@ -4,17 +4,16 @@ import com.practicum.tasks.Epic;
 import com.practicum.tasks.Subtask;
 import com.practicum.tasks.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryTaskManager implements TaskManager{
+public class InMemoryTaskManager implements TaskManager {
 
     HashMap<Integer, Task> taskMap = new HashMap<>();
     HashMap<Integer, Epic> epicMap = new HashMap<>();
     HashMap<Integer, Subtask> subMap = new HashMap<>();
     HashMap<Epic, List<Subtask>> epicTasks = new HashMap<>();
-
-    InMemoryHistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public void printMenu() {
@@ -77,21 +76,19 @@ public class InMemoryTaskManager implements TaskManager{
         return null;
     }
 
-    public void showEveryTask(HashMap<Integer, Task> taskList) {
-        for (Integer i : taskList.keySet()) {
-            System.out.println(taskList.get(i));
+    @Override
+    public void showEverything() {
+        System.out.println("Список задач:");
+        for (Integer i : taskMap.keySet()) {
+            System.out.println(taskMap.get(i));
         }
-    }
-
-    public void showEveryEpic(HashMap<Integer, Epic> epicList) {
-        for (Integer i : epicList.keySet()) {
-            System.out.println(epicList.get(i));
+        System.out.println("Список эпиков:");
+        for (Integer i : epicMap.keySet()) {
+            System.out.println(epicMap.get(i));
         }
-    }
-
-    public void showEverySub(HashMap<Integer, Subtask> subList) {
-        for (Integer i : subList.keySet()) {
-            System.out.println(subList.get(i));
+        System.out.println("Список подзадач:");
+        for (Integer i : subMap.keySet()) {
+            System.out.println(subMap.get(i));
         }
     }
 
@@ -125,6 +122,47 @@ public class InMemoryTaskManager implements TaskManager{
     public void showSubs(int i) {
         if (epicTasks.containsKey((Epic) searchForTask(i))) {
             System.out.println(epicTasks.get((Epic) searchForTask(i)));
+        }
+    }
+
+    @Override
+    public void createSomething(int i, int id) {
+        if (i == 1) {
+            Task task = Task.createTask(id, Status.NEW.getStatus());
+            taskMap.put(id, task);
+        } else if (i == 2) {
+            Epic epic = Epic.createEpic(id, Status.NEW.getStatus());
+            epicMap.put(id, epic);
+        } else if (i == 3) {
+            Subtask subtask = Subtask.createSubtask(id, Status.NEW.getStatus());
+            subMap.put(id, subtask);
+            List<Subtask> subArray = new ArrayList<>();
+            int neededKey = 0;
+            for (int o : epicMap.keySet()) {
+                if (o > neededKey) {
+                    neededKey = o;
+                }
+            }
+            Epic epicToHelp = epicMap.get(neededKey);
+            if (epicTasks.containsKey(epicToHelp)) {
+                subArray = epicTasks.get(epicToHelp);
+            }
+            subArray.add(subtask);
+            epicTasks.put(epicToHelp, subArray);
+        }
+    }
+
+    @Override
+    public void clearCategory(int i) {
+        if (i == 1) {
+            taskMap.clear();
+        } else if (i == 2) {
+            epicMap.clear();
+            subMap.clear();
+            epicTasks.clear();
+        } else if (i == 3) {
+            subMap.clear();
+            epicTasks.clear();
         }
     }
 
