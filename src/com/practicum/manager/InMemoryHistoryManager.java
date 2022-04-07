@@ -1,16 +1,15 @@
 package com.practicum.manager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 public class InMemoryHistoryManager implements HistoryManager{
 
-    static List<Object> searchHistory = new ArrayList<>();
+    public LinkedList<Object> searchHistory = new LinkedList<>();
 
     @Override
     public void addHistory(Object obj) {
         if (searchHistory.size() >= 10) {
-            searchHistory.remove(0);
+            searchHistory.removeFirst();
         }
         searchHistory.add(obj);
     }
