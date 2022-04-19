@@ -1,21 +1,121 @@
 package com.practicum.manager;
 
-import java.util.LinkedList;
+import com.practicum.tasks.Task;
 
-public class InMemoryHistoryManager implements HistoryManager{
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    public LinkedList<Object> searchHistory = new LinkedList<>();
+public class InMemoryHistoryManager implements HistoryManager {
+
+    public Node head;
+    public Node tail;
+    Map<Integer, Node> nodeMap = new HashMap<>();
 
     @Override
-    public void addHistory(Object obj) {
-        if (searchHistory.size() >= 10) {
-            searchHistory.removeFirst();
+    public void add(Task task) {
+        Node nodeToPut = new Node(task);
+        if (nodeMap.get(task.getId()) != null) {
+            removeNode(nodeMap.get(task.getId()));
         }
-        searchHistory.add(obj);
+        linkLast(nodeToPut);
+        nodeMap.put(task.getId(), nodeToPut);
     }
 
     @Override
-    public void showHistory() {
-        System.out.println(searchHistory);
+    public List<Task> getHistory() {
+        return getTasks();
     }
+
+    @Override
+    public void remove(int id) {
+        removeNode(nodeMap.get(id));
+        nodeMap.remove(id);
+    }
+
+    @Override
+    public boolean containsTask(int id) {
+        return nodeMap.containsKey(id);
+    }
+
+    public void linkLast(Node node) {
+        if (head == null) {
+            head = node;
+        } else if (tail == null) {
+            tail = node;
+            head.setNext(tail);
+            tail.setPrev(head);
+        } else {
+            Node oldTail = tail;
+            tail = node;
+            tail.setPrev(oldTail);
+            tail.getPrev().setNext(tail);
+        }
+    }
+
+    public void removeNode(Node node) {
+        if ((node.getPrev() != null) && (node.getNext() != null)) {
+            node.getNext().setPrev(node.getPrev());
+            node.getPrev().setNext(node.getNext());
+        } else if ((node.getPrev() == null) && (node.getNext() == null)) {
+            head = new Node();
+        } else if (node.getPrev() == null) {
+            node.getNext().setPrev(null);
+            head = node.getNext();
+        } else {
+            node.getPrev().setNext(null);
+            tail = node.getPrev();
+        }
+    }
+
+    public List<Task> getTasks() {
+        List<Task> searchList = new ArrayList<>();
+        Node node = head;
+        while (node != null) {
+            searchList.add(node.data);
+            node = node.getNext();
+        }
+        return searchList;
+    }
+
+}
+
+class Node {
+
+    public Task data;
+    private Node next;
+    private Node prev;
+
+    public Node() {
+        this(null);
+    }
+
+    public Node(Task data) {
+        this.data = data;
+        this.next = null;
+        this.prev = null;
+    }
+
+    public Node getNext() {
+        return this.next;
+    }
+
+    public void setNext(Node next) {
+        this.next = next;
+    }
+
+    public Node getPrev() {
+        return this.prev;
+    }
+
+    public void setPrev(Node prev) {
+        this.prev = prev;
+    }
+
+    @Override
+    public String toString() {
+        return "Просмотр задачи: " + data;
+    }
+
 }

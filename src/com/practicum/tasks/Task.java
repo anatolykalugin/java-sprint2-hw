@@ -1,12 +1,12 @@
 package com.practicum.tasks;
 
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Task {
 
     protected String name;
     protected String description;
+
     private final int id;
     private String status;
 
@@ -35,16 +35,22 @@ public class Task {
 
     public static Task createTask(int id, String status) {
 
-        Scanner taskScanner = new Scanner(System.in);
+//        Scanner taskScanner = new Scanner(System.in);
         System.out.println("Введите название задачи");
-        String name = taskScanner.next();
+//        String name = taskScanner.next();
+        String name = "Задача";
         System.out.println("Введите описание задачи");
-        String description = taskScanner.next();
+//        String description = taskScanner.next();
+        String description = "Описание задачи";
 
         Task task = new Task(name, description, id, status);
 
         System.out.println("Задача добавлена!");
         return task;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

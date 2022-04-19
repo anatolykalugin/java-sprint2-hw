@@ -10,6 +10,8 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
+    HistoryManager searchHistory = Managers.getDefaultHistory();
+
     public HashMap<Integer, Task> taskMap = new HashMap<>();
     public HashMap<Integer, Epic> epicMap = new HashMap<>();
     public HashMap<Integer, Subtask> subMap = new HashMap<>();
@@ -93,7 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Object searchForTask(int i) {
+    public Task searchForTask(int i) {
         if (i >= 0 && taskMap.containsKey(i)) {
             return taskMap.get(i);
         } else if (i >= 0 && epicMap.containsKey(i)) {
@@ -105,14 +107,34 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    public void addToHistory(Task task) {
+        searchHistory.add(task);
+    }
+
     @Override
     public void searchAndDelete(int i) {
         if (i >= 0 && taskMap.containsKey(i)) {
             taskMap.remove(i);
+            if (searchHistory.containsTask(i)) {
+                searchHistory.remove(i);
+            }
         } else if (i >= 0 && epicMap.containsKey(i)) {
+            for (Subtask subToDel : epicTasks.get(epicMap.get(i))) {
+                if (searchHistory.containsTask(subToDel.getId())) {
+                    searchHistory.remove(subToDel.getId());
+                }
+                subMap.remove(subToDel.getId());
+            }
+            epicTasks.remove(epicMap.get(i));
             epicMap.remove(i);
+            if (searchHistory.containsTask(i)) {
+                searchHistory.remove(i);
+            }
         } else if (i >= 0 && subMap.containsKey(i)) {
             subMap.remove(i);
+            if (searchHistory.containsTask(i)) {
+                searchHistory.remove(i);
+            }
         } else {
             System.out.println("Нет задачи с таким идентификатором");
         }
@@ -155,15 +177,41 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearCategory(int i) {
         if (i == 1) {
+            for (Task taskToClear : taskMap.values()) {
+                if (searchHistory.containsTask(taskToClear.getId())) {
+                    searchHistory.remove(taskToClear.getId());
+                }
+            }
             taskMap.clear();
         } else if (i == 2) {
+            for (Epic epicToClear : epicMap.values()) {
+                if (searchHistory.containsTask(epicToClear.getId())) {
+                    searchHistory.remove(epicToClear.getId());
+                }
+            }
+            for (Epic epicToHelp : epicTasks.keySet()) {
+                for (Subtask subToClear : epicTasks.get(epicToHelp)) {
+                    if (searchHistory.containsTask(subToClear.getId())) {
+                        searchHistory.remove(subToClear.getId());
+                    }
+                }
+            }
             epicMap.clear();
             subMap.clear();
             epicTasks.clear();
         } else if (i == 3) {
+            for (Subtask subToClear : subMap.values()) {
+                if (searchHistory.containsTask(subToClear.getId())) {
+                    searchHistory.remove(subToClear.getId());
+                }
+            }
             subMap.clear();
             epicTasks.clear();
         }
+    }
+
+    public void showSearchHistory() {
+        System.out.println(searchHistory.getHistory());
     }
 
 }

@@ -1,18 +1,69 @@
 package com.practicum.manager;
 
-import java.util.Scanner;
-
 public class Practicum {
 
     public static void main(String[] args) {
 
         TaskManager taskManager = Managers.getDefault();
-        HistoryManager searchHistory = Managers.getDefaultHistory();
 
         int id = 0;
-        Scanner scanner = new Scanner(System.in);
 
-        while (true) {
+//      тест согласно условиям ТЗ:
+
+        taskManager.createSomething(1, id);
+        id++;
+        taskManager.createSomething(1, id);
+        id++;
+        taskManager.createSomething(2, id);
+        id++;
+        taskManager.createSomething(3, id);
+        id++;
+        taskManager.createSomething(3, id);
+        id++;
+        taskManager.createSomething(3, id);
+        id++;
+        taskManager.createSomething(2, id);
+
+        System.out.println(taskManager.searchForTask(0));
+        taskManager.addToHistory(taskManager.searchForTask(0));
+        System.out.println(taskManager.searchForTask(2));
+        taskManager.addToHistory(taskManager.searchForTask(2));
+        System.out.println(taskManager.searchForTask(5));
+        taskManager.addToHistory(taskManager.searchForTask(5));
+        System.out.println(taskManager.searchForTask(5));
+        taskManager.addToHistory(taskManager.searchForTask(5));
+        System.out.println(taskManager.searchForTask(4));
+        taskManager.addToHistory(taskManager.searchForTask(4));
+        System.out.println(taskManager.searchForTask(1));
+        taskManager.addToHistory(taskManager.searchForTask(1));
+        System.out.println(taskManager.searchForTask(3));
+        taskManager.addToHistory(taskManager.searchForTask(3));
+        System.out.println(taskManager.searchForTask(1));
+        taskManager.addToHistory(taskManager.searchForTask(1));
+        System.out.println(taskManager.searchForTask(0));
+        taskManager.addToHistory(taskManager.searchForTask(0));
+
+        System.out.println("История поиска до удалений: ");
+        taskManager.showSearchHistory();
+
+        System.out.println("Подзадачи эпика с ID 2: ");
+        taskManager.showSubs(2);
+
+        taskManager.searchAndDelete(0);
+
+        System.out.println("История поиска после удаления задачи 0: ");
+        taskManager.showSearchHistory();
+
+        System.out.println("История поиска после удаления эпика 2: ");
+        taskManager.searchAndDelete(2);
+
+        taskManager.showSearchHistory();
+
+//        Ниже - взаимодействие с юзером:
+
+//        Scanner scanner = new Scanner(System.in);
+
+        /*while (true) {
             taskManager.printMenu();
             int command = scanner.nextInt();
             switch (command) {
@@ -62,7 +113,7 @@ public class Practicum {
                         System.out.println("Нет задачи с таким идентификатором");
                     } else {
                         System.out.println(taskManager.searchForTask(command4));
-                        searchHistory.addHistory(taskManager.searchForTask(command4));
+                        taskManager.addToHistory(taskManager.searchForTask(command4));
                     }
                     break;
                 case 6:
@@ -96,13 +147,13 @@ public class Practicum {
                     taskManager.showSubs(command6);
                     break;
                 case 9:
-                    searchHistory.showHistory();
+                    taskManager.showSearchHistory();
                     break;
                 case 0:
                     return;
                 default:
                     System.out.println("Такой опции нет. Попробуйте снова.");
             }
-        }
+        }*/
     }
 }
