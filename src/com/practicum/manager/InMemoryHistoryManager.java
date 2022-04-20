@@ -30,8 +30,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        removeNode(nodeMap.get(id));
-        nodeMap.remove(id);
+        if (nodeMap.containsKey(id)) {
+            removeNode(nodeMap.get(id));
+            nodeMap.remove(id);
+        }
     }
 
     @Override
@@ -39,33 +41,35 @@ public class InMemoryHistoryManager implements HistoryManager {
         return nodeMap.containsKey(id);
     }
 
-    public void linkLast(Node node) {
+    private void linkLast(Node node) {
+        Node oldTail = tail;
+        tail = node;
         if (head == null) {
             head = node;
-        } else if (tail == null) {
-            tail = node;
-            head.setNext(tail);
-            tail.setPrev(head);
+            head.setPrev(null);
+            head.setNext(node);
+            tail.setPrev(node);
         } else {
-            Node oldTail = tail;
-            tail = node;
             tail.setPrev(oldTail);
             tail.getPrev().setNext(tail);
         }
     }
 
     public void removeNode(Node node) {
-        if ((node.getPrev() != null) && (node.getNext() != null)) {
+        if (node == head) {
+            node.getNext().setPrev(null);
+            head = node.getNext();
+            node.setNext(null);
+        } else if ((node.getPrev() != null) && (node.getNext() != null)) {
             node.getNext().setPrev(node.getPrev());
             node.getPrev().setNext(node.getNext());
         } else if ((node.getPrev() == null) && (node.getNext() == null)) {
-            head = new Node();
-        } else if (node.getPrev() == null) {
-            node.getNext().setPrev(null);
-            head = node.getNext();
-        } else {
+            head = null;
+            tail = null;
+        }  else {
             node.getPrev().setNext(null);
             tail = node.getPrev();
+            node.setPrev(null);
         }
     }
 
@@ -86,10 +90,6 @@ class Node {
     public Task data;
     private Node next;
     private Node prev;
-
-    public Node() {
-        this(null);
-    }
 
     public Node(Task data) {
         this.data = data;
