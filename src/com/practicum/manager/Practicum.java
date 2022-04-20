@@ -54,9 +54,14 @@ public class Practicum {
         System.out.println("История поиска после удаления задачи 0: ");
         taskManager.showSearchHistory();
 
-        System.out.println("История поиска после удаления эпика 2: ");
         taskManager.searchAndDelete(2);
 
+        System.out.println("История поиска после удаления эпика 2: ");
+        taskManager.showSearchHistory();
+
+        taskManager.searchAndDelete(1);
+
+        System.out.println("История поиска после удаления последней задачи: ");
         taskManager.showSearchHistory();
 
 //        Ниже - взаимодействие с юзером:
