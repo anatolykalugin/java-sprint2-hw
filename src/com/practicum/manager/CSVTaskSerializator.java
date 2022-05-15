@@ -1,5 +1,6 @@
 package com.practicum.manager;
 
+import com.practicum.exceptions.UnknownTypeException;
 import com.practicum.tasks.Epic;
 import com.practicum.tasks.Subtask;
 import com.practicum.tasks.Task;
@@ -40,7 +41,7 @@ class CSVTaskSerializator {
             case TASK:
                 return new Task(name, description, id, status, type);
             default:
-                throw new ManagerSaveException("Где-то ошибка :(");
+                throw new UnknownTypeException("Неизвстный тип задачи - " + type);
         }
     }
 
