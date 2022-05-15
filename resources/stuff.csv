@@ -1,0 +1,8 @@
+id,type,name,status,description,epic
+0,TASK,task1,desc1,новое
+1,TASK,task2,desc2,новое
+2,EPIC,epic1,desc3,новое
+3,SUBTASK,sub1,desc4,новое,2
+4,SUBTASK,sub2,desc5,новое,2
+search history:
+4,2,0,1

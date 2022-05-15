@@ -16,12 +16,16 @@ public interface TaskManager {
 
     void showEverything();
 
-    void createSomething(int i, int id);
-
     void clearCategory(int i);
 
     void showSearchHistory();
 
     void addToHistory(Task task);
+
+    void createTask(String name, String description);
+
+    void createSubtask(String name, String description);
+
+    void createEpic(String name, String description);
 
 }

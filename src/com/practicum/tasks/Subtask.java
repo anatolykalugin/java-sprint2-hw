@@ -2,23 +2,20 @@ package com.practicum.tasks;
 
 public class Subtask extends Task {
 
-    public Subtask(String name, String description, int id, String status) {
-        super(name, description, id, status);
+    private final int epicLinkId;
+
+    public Subtask(String name, String description, int id, String status, TaskTypes type, int epicLinkId) {
+        super(name, description, id, status, type);
+        this.epicLinkId = epicLinkId;
     }
 
-    public static Subtask createSubtask(int id, String status) {
-//        Scanner subScanner = new Scanner(System.in);
-        System.out.println("Введите название подзадачи");
-//        String name = subScanner.next();
-        String name = "Подзадача";
-        System.out.println("Введите описание подзадачи");
-//        String description = subScanner.next();
-        String description = "описание подзадачи";
+    public int getEpicLinkId() {
+        return epicLinkId;
+    }
 
-        Subtask subtask = new Subtask(name, description, id, status);
-
-        System.out.println("Подзадача добавлена!");
-        return subtask;
+    @Override
+    public String toString() {
+        return super.toString() + ", Связка: " + epicLinkId;
     }
 
 }

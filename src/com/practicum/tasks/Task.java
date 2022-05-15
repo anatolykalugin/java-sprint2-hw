@@ -4,11 +4,23 @@ import java.util.Objects;
 
 public class Task {
 
-    protected String name;
-    protected String description;
-
-    private final int id;
+    private String name;
+    private String description;
+    private int id;
     private String status;
+    private TaskTypes type;
+
+    public Task(String name, String description, int id, String status, TaskTypes type) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+        this.type = type;
+    }
+
+    public int getId() {
+        return id;
+    }
 
     public void setStatus(String status) {
         this.status = status;
@@ -18,39 +30,25 @@ public class Task {
         return status;
     }
 
+    public TaskTypes getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     @Override
     public String toString() {
         return "Название: " + name +
                 ", Описание: " + description +
                 ", id - " + id +
-                ", Статус: " + status;
-    }
-
-    public Task(String name, String description, int id, String status) {
-        this.name = name;
-        this.description = description;
-        this.id = id;
-        this.status = status;
-    }
-
-    public static Task createTask(int id, String status) {
-
-//        Scanner taskScanner = new Scanner(System.in);
-        System.out.println("Введите название задачи");
-//        String name = taskScanner.next();
-        String name = "Задача";
-        System.out.println("Введите описание задачи");
-//        String description = taskScanner.next();
-        String description = "Описание задачи";
-
-        Task task = new Task(name, description, id, status);
-
-        System.out.println("Задача добавлена!");
-        return task;
-    }
-
-    public int getId() {
-        return id;
+                ", Статус: " + status +
+                ", Тип" + type;
     }
 
     @Override

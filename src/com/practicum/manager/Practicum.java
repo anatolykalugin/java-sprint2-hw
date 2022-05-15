@@ -2,89 +2,38 @@ package com.practicum.manager;
 
 public class Practicum {
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         TaskManager taskManager = Managers.getDefault();
 
-        int id = 0;
+        Scanner scanner = new Scanner(System.in);
 
-//      тест согласно условиям ТЗ:
-
-        taskManager.createSomething(1, id);
-        id++;
-        taskManager.createSomething(1, id);
-        id++;
-        taskManager.createSomething(2, id);
-        id++;
-        taskManager.createSomething(3, id);
-        id++;
-        taskManager.createSomething(3, id);
-        id++;
-        taskManager.createSomething(3, id);
-        id++;
-        taskManager.createSomething(2, id);
-
-        System.out.println(taskManager.searchForTask(0));
-        taskManager.addToHistory(taskManager.searchForTask(0));
-        System.out.println(taskManager.searchForTask(2));
-        taskManager.addToHistory(taskManager.searchForTask(2));
-        System.out.println(taskManager.searchForTask(5));
-        taskManager.addToHistory(taskManager.searchForTask(5));
-        System.out.println(taskManager.searchForTask(5));
-        taskManager.addToHistory(taskManager.searchForTask(5));
-        System.out.println(taskManager.searchForTask(4));
-        taskManager.addToHistory(taskManager.searchForTask(4));
-        System.out.println(taskManager.searchForTask(1));
-        taskManager.addToHistory(taskManager.searchForTask(1));
-        System.out.println(taskManager.searchForTask(3));
-        taskManager.addToHistory(taskManager.searchForTask(3));
-        System.out.println(taskManager.searchForTask(1));
-        taskManager.addToHistory(taskManager.searchForTask(1));
-        System.out.println(taskManager.searchForTask(0));
-        taskManager.addToHistory(taskManager.searchForTask(0));
-
-        System.out.println("История поиска до удалений: ");
-        taskManager.showSearchHistory();
-
-        System.out.println("Подзадачи эпика с ID 2: ");
-        taskManager.showSubs(2);
-
-        taskManager.searchAndDelete(0);
-
-        System.out.println("История поиска после удаления задачи 0: ");
-        taskManager.showSearchHistory();
-
-        taskManager.searchAndDelete(2);
-
-        System.out.println("История поиска после удаления эпика 2: ");
-        taskManager.showSearchHistory();
-
-        taskManager.searchAndDelete(1);
-
-        System.out.println("История поиска после удаления последней задачи: ");
-        taskManager.showSearchHistory();
-
-//        Ниже - взаимодействие с юзером:
-
-//        Scanner scanner = new Scanner(System.in);
-
-        /*while (true) {
+        while (true) {
             taskManager.printMenu();
             int command = scanner.nextInt();
             switch (command) {
                 case 1:
-                    taskManager.createSomething(1, id);
-                    id++;
+                    System.out.println("Введите название задачи:");
+                    String name = scanner.next();
+                    System.out.println("Введите описание задачи:");
+                    String description = scanner.next();
+                    taskManager.createTask(name, description);
                     break;
                 case 2:
-                    taskManager.createSomething(2, id);
-                    id++;
+                    System.out.println("Введите название эпика:");
+                    String name2 = scanner.next();
+                    System.out.println("Введите описание эпика:");
+                    String description2 = scanner.next();
+                    taskManager.createEpic(name2, description2);
                     while (true) {
                         System.out.println("Хотите добавить подзадачу? 1 - Да, 0 - Нет");
                         int command2 = scanner.nextInt();
                         if (command2 == 1) {
-                            taskManager.createSomething(3, id);
-                            id++;
+                            System.out.println("Введите название подзадачи:");
+                            String name3 = scanner.next();
+                            System.out.println("Введите описание подзадачи:");
+                            String description3 = scanner.next();
+                            taskManager.createSubtask(name3, description3);
                         } else if (command2 == 0) {
                             break;
                         } else {
@@ -159,6 +108,6 @@ public class Practicum {
                 default:
                     System.out.println("Такой опции нет. Попробуйте снова.");
             }
-        }*/
-    }
+        }
+    }*/
 }

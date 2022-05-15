@@ -46,12 +46,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         tail = node;
         if (head == null) {
             head = node;
-            head.setPrev(null);
             head.setNext(node);
             tail.setPrev(node);
         } else {
             tail.setPrev(oldTail);
             tail.getPrev().setNext(tail);
+            tail.setNext(node);
         }
     }
 
@@ -79,6 +79,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         while (node != null) {
             searchList.add(node.data);
             node = node.getNext();
+            if (node.equals(node.getNext())) {
+                searchList.add(node.data);
+                break;
+            }
         }
         return searchList;
     }

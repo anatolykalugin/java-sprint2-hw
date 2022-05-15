@@ -3,6 +3,7 @@ package com.practicum.manager;
 import com.practicum.tasks.Epic;
 import com.practicum.tasks.Subtask;
 import com.practicum.tasks.Task;
+import com.practicum.tasks.TaskTypes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Epic> epicMap = new HashMap<>();
     public HashMap<Integer, Subtask> subMap = new HashMap<>();
     public HashMap<Epic, List<Subtask>> epicTasks = new HashMap<>();
+
+    int id = 0;
 
     @Override
     public void printMenu() {
@@ -33,23 +36,58 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public void createTask(String name, String description) {
+        Task task = new Task(name, description, id, Status.NEW.getStatus(), TaskTypes.TASK);
+        taskMap.put(id, task);
+        id++;
+        System.out.println("Задача добавлена!");
+    }
+
+    @Override
+    public void createEpic(String name, String description) {
+        Epic epic = new Epic(name, description, id, Status.NEW.getStatus(), TaskTypes.EPIC);
+        epicMap.put(id, epic);
+        epicTasks.put(epic, null);
+        id++;
+        System.out.println("Эпик добавлен!");
+    }
+
+    @Override
+    public void createSubtask(String name, String description) {
+        int epicId = 0;
+        for (int o : epicMap.keySet()) {
+            if (o > epicId) {
+                epicId = o;
+            }
+        }
+        Subtask sub = new Subtask(name, description, id, Status.NEW.getStatus(), TaskTypes.SUBTASK, epicId);
+        subMap.put(id, sub);
+        List<Subtask> subArray = new ArrayList<>();
+        if (epicTasks.get((Epic) searchForTask(epicId)) != null) {
+            subArray = epicTasks.get((Epic) searchForTask(epicId));
+        }
+        subArray.add(sub);
+        epicTasks.put(epicMap.get(epicId), subArray);
+        id++;
+        System.out.println("Подзадача добавлена!");
+    }
+
+    @Override
     public void updateTask(int id, String status) {
         if (taskMap.containsKey(id)) {
-            taskMap.put(id, Task.createTask(id, status));
+            taskMap.get(id).setStatus(status);
         } else if (epicMap.containsKey(id)) {
-            List<Subtask> subArray = epicTasks.get((Epic) searchForTask(id));
-            Epic epic = Epic.createEpic(id, status);
-            epicMap.put(id, epic);
-            epicTasks.remove((Epic) searchForTask(id));
-            epicTasks.put(epic, subArray);
+            List<Subtask> subArray = epicTasks.get(epicMap.get(id));
+            epicMap.get(id).setStatus(status);
+            epicTasks.remove(epicMap.get(id));
+            epicTasks.put(epicMap.get(id), subArray);
         } else if (subMap.containsKey(id)) {
             Subtask subToReplace = (Subtask) searchForTask(id);
-            Subtask subNew = Subtask.createSubtask(id,status);
-            subMap.put(id, subNew);
+            subMap.get(id).setStatus(status);
             if (searchForEpic(subToReplace) != null) {
                 Epic epic1 = searchForEpic(subToReplace);
                 List<Subtask> subArray2 = epicTasks.get(searchForEpic(subToReplace));
-                subArray2.add(subNew);
+                subArray2.add(subMap.get(id));
                 subArray2.remove(subToReplace);
                 boolean isEqual = true;
                 for (Subtask obj : subArray2) {
@@ -131,6 +169,9 @@ public class InMemoryTaskManager implements TaskManager {
                 searchHistory.remove(i);
             }
         } else if (i >= 0 && subMap.containsKey(i)) {
+            List<Subtask> subArray = epicTasks.get(searchForEpic((Subtask) searchForTask(i)));
+            subArray.remove((Subtask) searchForTask(i));
+            epicTasks.put(searchForEpic((Subtask) searchForTask(i)), subArray);
             subMap.remove(i);
             if (searchHistory.containsTask(i)) {
                 searchHistory.remove(i);
@@ -144,33 +185,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void showSubs(int i) {
         if (epicTasks.containsKey((Epic) searchForTask(i))) {
             System.out.println(epicTasks.get((Epic) searchForTask(i)));
-        }
-    }
-
-    @Override
-    public void createSomething(int i, int id) {
-        if (i == 1) {
-            Task task = Task.createTask(id, Status.NEW.getStatus());
-            taskMap.put(id, task);
-        } else if (i == 2) {
-            Epic epic = Epic.createEpic(id, Status.NEW.getStatus());
-            epicMap.put(id, epic);
-        } else if (i == 3) {
-            Subtask subtask = Subtask.createSubtask(id, Status.NEW.getStatus());
-            subMap.put(id, subtask);
-            List<Subtask> subArray = new ArrayList<>();
-            int neededKey = 0;
-            for (int o : epicMap.keySet()) {
-                if (o > neededKey) {
-                    neededKey = o;
-                }
-            }
-            Epic epicToHelp = epicMap.get(neededKey);
-            if (epicTasks.containsKey(epicToHelp)) {
-                subArray = epicTasks.get(epicToHelp);
-            }
-            subArray.add(subtask);
-            epicTasks.put(epicToHelp, subArray);
         }
     }
 
