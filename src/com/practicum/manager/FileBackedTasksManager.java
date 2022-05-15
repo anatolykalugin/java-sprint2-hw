@@ -3,7 +3,6 @@ package com.practicum.manager;
 import com.practicum.tasks.Epic;
 import com.practicum.tasks.Subtask;
 import com.practicum.tasks.Task;
-import com.practicum.tasks.TaskTypes;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,7 +16,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.filePath = filePath;
     }
 
-    CSVTaskSerializator serializator = new CSVTaskSerializator();
+    private final CSVTaskSerializator serializator = new CSVTaskSerializator();
+
+    public CSVTaskSerializator getSerializator() {
+        return serializator;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
 
     @Override
     public void createTask(String name, String description) {
@@ -77,21 +84,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private void save() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
-            bw.append("id,type,name,status,description,epic");
+            bw.append(CSVTaskSerializator.getHeader());
             bw.newLine();
             for (Task task : taskMap.values()) {
-                bw.append(serializator.toString(task));
+                bw.append(serializator.taskToString(task));
                 bw.newLine();
             }
             for (Epic epic : epicMap.values()) {
-                bw.append(serializator.toString(epic));
+                bw.append(serializator.taskToString(epic));
                 bw.newLine();
             }
             for (Subtask sub : subMap.values()) {
-                bw.append(serializator.toString(sub));
+                bw.append(serializator.taskToString(sub));
                 bw.newLine();
             }
-            bw.append("search history:");
+            bw.append(CSVTaskSerializator.getSearchHeader());
             bw.newLine();
             bw.append(CSVTaskSerializator.historyToString(searchHistory));
         } catch (IOException e) {
@@ -106,8 +113,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             while (br.ready()) {
                 String line1 = br.readLine();
                 if (!line1.isBlank()) {
-                    if ((!line1.equals("search history:")) && (line1 != null)) {
-                        Task task = fb1.serializator.fromString(line1);
+                    if (!line1.equals(CSVTaskSerializator.getSearchHeader())) {
+                        Task task = fb1.serializator.taskFromString(line1);
                         switch (task.getType()) {
                             case TASK:
                                 fb1.taskMap.put(task.getId(), task);
@@ -152,68 +159,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         tm2.showSearchHistory();
         FileBackedTasksManager fb2 = loadFromFile("resources/stuff.csv");
         fb2.showSearchHistory();
-    }
-
-}
-
-class CSVTaskSerializator {
-
-    public String toString(Task task) {
-        StringBuilder sb = new StringBuilder();
-        if (task.getType().equals(TaskTypes.SUBTASK)) {
-            Subtask sub = (Subtask) task;
-            sb.append(sub.getId()).append(",").append(sub.getType()).append(",").append(sub.getName())
-                    .append(",").append(sub.getDescription()).append(",").append(sub.getStatus())
-                    .append(",").append(sub.getEpicLinkId());
-        } else {
-            sb.append(task.getId()).append(",").append(task.getType()).append(",").append(task.getName())
-                    .append(",").append(task.getDescription()).append(",").append(task.getStatus());
-        }
-        return sb.toString();
-    }
-
-    public Task fromString(String value) {
-        String[] toTask = value.split(",");
-        int id = Integer.parseInt(toTask[0]);
-        TaskTypes type = TaskTypes.valueOf(toTask[1]);
-        String name = toTask[2];
-        String description = toTask[3];
-        String status = toTask[4];
-        switch (type) {
-            case SUBTASK:
-                int epicLinkId = Integer.parseInt(toTask[5]);
-                return new Subtask(name, description, id, status, type, epicLinkId);
-            case EPIC:
-                return new Epic(name, description, id, status, type);
-            case TASK:
-                return new Task(name, description, id, status, type);
-            default:
-                return null;
-        }
-    }
-
-    public static String historyToString(HistoryManager manager) {
-        StringBuilder sb2 = new StringBuilder();
-        if (!manager.getHistory().isEmpty()) {
-            for (int i = 0; i < manager.getHistory().size(); i++) {
-                Task task = manager.getHistory().get(i);
-                if (i != (manager.getHistory().size() - 1)) {
-                    sb2.append(task.getId()).append(",");
-                } else {
-                    sb2.append(task.getId());
-                }
-            }
-        }
-        return sb2.toString();
-    }
-
-    public List<Integer> historyFromString(String value) {
-        String[] toHistory = value.split(",");
-        List<Integer> recreatedHistory = new ArrayList<>();
-        for (String s : toHistory) {
-            recreatedHistory.add(Integer.parseInt(s));
-        }
-        return recreatedHistory;
     }
 
 }
