@@ -1,8 +1,5 @@
-id,type,name,status,description,epic
-0,TASK,task1,desc1,новое
-1,TASK,task2,desc2,новое
-2,EPIC,epic1,desc3,новое
-3,SUBTASK,sub1,desc4,новое,2
-4,SUBTASK,sub2,desc5,новое,2
+id,type,name,status,description,duration,startTime,epic
+1,EPIC,rbymj,erdc,новое,54,01.02.2022 01:03
+2,SUBTASK,uik,wqec,новое,43,20.02.2022 10:30,1
 search history:
-4,2,0,1
+2,1

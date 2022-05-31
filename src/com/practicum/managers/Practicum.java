@@ -1,8 +1,10 @@
-package com.practicum.manager;
+package com.practicum.managers;
+
+import java.util.Scanner;
 
 public class Practicum {
 
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
 
         TaskManager taskManager = Managers.getDefault();
 
@@ -17,14 +19,19 @@ public class Practicum {
                     String name = scanner.next();
                     System.out.println("Введите описание задачи:");
                     String description = scanner.next();
-                    taskManager.createTask(name, description);
+                    System.out.println("Длительность в минутах");
+                    long duration = scanner.nextLong();
+                    System.out.println("Срок в формате дд.мм.гггг чч:мм");
+                    scanner.nextLine();
+                    String date = scanner.nextLine();
+                    taskManager.createTask(name, description, duration, date);
                     break;
                 case 2:
                     System.out.println("Введите название эпика:");
                     String name2 = scanner.next();
                     System.out.println("Введите описание эпика:");
                     String description2 = scanner.next();
-                    taskManager.createEpic(name2, description2);
+                    taskManager.createEpic(name2, description2, 0, "01.01.1970 00:00");
                     while (true) {
                         System.out.println("Хотите добавить подзадачу? 1 - Да, 0 - Нет");
                         int command2 = scanner.nextInt();
@@ -33,7 +40,15 @@ public class Practicum {
                             String name3 = scanner.next();
                             System.out.println("Введите описание подзадачи:");
                             String description3 = scanner.next();
-                            taskManager.createSubtask(name3, description3);
+                            System.out.println("Длительность в минутах");
+                            long durationOfSub = scanner.nextLong();
+                            System.out.println("Срок в формате дд.мм.гггг чч:мм");
+                            scanner.nextLine();
+                            String dateOfSub = scanner.nextLine();
+                            taskManager.createSubtask(name3, description3, durationOfSub, dateOfSub);
+                            taskManager.addEpicDuration(durationOfSub);
+                            taskManager.addEpicStartTime(dateOfSub);
+                            taskManager.addEpicEndTime();
                         } else if (command2 == 0) {
                             break;
                         } else {
@@ -103,11 +118,14 @@ public class Practicum {
                 case 9:
                     taskManager.showSearchHistory();
                     break;
+                case 10:
+                    taskManager.getPrioritizedTasks();
+                    break;
                 case 0:
                     return;
                 default:
                     System.out.println("Такой опции нет. Попробуйте снова.");
             }
         }
-    }*/
+    }
 }

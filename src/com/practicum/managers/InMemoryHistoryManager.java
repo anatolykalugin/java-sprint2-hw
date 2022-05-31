@@ -1,4 +1,4 @@
-package com.practicum.manager;
+package com.practicum.managers;
 
 import com.practicum.tasks.Task;
 
@@ -46,17 +46,21 @@ public class InMemoryHistoryManager implements HistoryManager {
         tail = node;
         if (head == null) {
             head = node;
-            head.setNext(node);
-            tail.setPrev(node);
+            head.setNext(tail);
+            tail.setPrev(head);
+            head.setPrev(null);
         } else {
             tail.setPrev(oldTail);
             tail.getPrev().setNext(tail);
-            tail.setNext(node);
         }
+        tail.setNext(null);
     }
 
     public void removeNode(Node node) {
-        if ((node == head) && (head != tail)) {
+        if ((node == head) && (head == tail)) {
+            head = head.getNext();
+            tail = tail.getPrev();
+        } else if (node == head) {
             node.getNext().setPrev(null);
             head = node.getNext();
             node.setNext(null);
@@ -67,9 +71,13 @@ public class InMemoryHistoryManager implements HistoryManager {
             head = null;
             tail = null;
         }  else {
-            node.getPrev().setNext(null);
-            tail = node.getPrev();
-            node.setPrev(null);
+            if (node.getPrev() != null) {
+                node.getPrev().setNext(null);
+                tail = node.getPrev();
+                node.setPrev(null);
+            } else {
+                node.setPrev(tail);
+            }
         }
     }
 
@@ -78,11 +86,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node node = head;
         while (node != null) {
             searchList.add(node.data);
-            node = node.getNext();
-            if (node.equals(node.getNext())) {
-                searchList.add(node.data);
+            if ((node.getNext() == null) || (node.data.equals(node.getNext().data))) {
                 break;
             }
+            node = node.getNext();
         }
         return searchList;
     }

@@ -1,4 +1,4 @@
-package com.practicum.manager;
+package com.practicum.managers;
 
 import com.practicum.exceptions.ManagerSaveException;
 import com.practicum.tasks.Epic;
@@ -28,20 +28,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void createTask(String name, String description) {
-        super.createTask(name, description);
+    public void createTask(String name, String description, long duration, String date) {
+        super.createTask(name, description, duration, date);
         save();
     }
 
     @Override
-    public void createEpic(String name, String description) {
-        super.createEpic(name, description);
+    public void createEpic(String name, String description, long duration, String date) {
+        super.createEpic(name, description, duration, date);
         save();
     }
 
     @Override
-    public void createSubtask(String name, String description) {
-        super.createSubtask(name, description);
+    public void createSubtask(String name, String description, long duration, String date) {
+        super.createSubtask(name, description, duration, date);
         save();
     }
 
@@ -107,7 +107,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    private static FileBackedTasksManager loadFromFile(String filePath) {
+    public static FileBackedTasksManager loadFromFile(String filePath) {
         FileBackedTasksManager fb1 = new FileBackedTasksManager(filePath);
         try (BufferedReader br = new BufferedReader(new FileReader(fb1.filePath))) {
             br.readLine();
@@ -119,6 +119,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         switch (task.getType()) {
                             case TASK:
                                 fb1.taskMap.put(task.getId(), task);
+                                fb1.tasksTree.add(task);
                                 break;
                             case EPIC:
                                 fb1.epicMap.put(task.getId(), (Epic) task);
@@ -128,6 +129,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                                 fb1.subMap.put(task.getId(), (Subtask) task);
                                 fb1.epicTasks.get(fb1.epicMap.get(((Subtask) task).getEpicLinkId()))
                                         .add((Subtask) task);
+                                fb1.tasksTree.add(task);
                                 break;
                         }
                     } else {
@@ -142,24 +144,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             throw new ManagerSaveException(e.getMessage());
         }
         return fb1;
-    }
-
-   /*  Тест по ТЗ: */
-    public static void main(String[] args) {
-        TaskManager tm2 = Managers.getDefault();
-        tm2.createTask("task1", "desc1");
-        tm2.createTask("task2", "desc2");
-        tm2.createEpic("epic1", "desc3");
-        tm2.createSubtask("sub1", "desc4");
-        tm2.createSubtask("sub2", "desc5");
-        tm2.addToHistory(tm2.searchForTask(0));
-        tm2.addToHistory(tm2.searchForTask(4));
-        tm2.addToHistory(tm2.searchForTask(2));
-        tm2.addToHistory(tm2.searchForTask(0));
-        tm2.addToHistory(tm2.searchForTask(1));
-        tm2.showSearchHistory();
-        FileBackedTasksManager fb2 = loadFromFile("resources/stuff.csv");
-        fb2.showSearchHistory();
     }
 
 }

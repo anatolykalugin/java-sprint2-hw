@@ -1,4 +1,4 @@
-package com.practicum.manager;
+package com.practicum.managers;
 
 public enum Status {
 
