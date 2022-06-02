@@ -4,18 +4,18 @@ import com.practicum.tasks.Epic;
 import com.practicum.tasks.Subtask;
 import com.practicum.tasks.Task;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class FileBackedTasksManagerTest {
+class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>{
 
-    private static TaskManager tm;
-
-    @BeforeAll
-    public static void beforeAll() {
-        tm = Managers.getDefault();
+    @Override
+    @BeforeEach
+    public void beforeEach() {
+        tm = new FileBackedTasksManager("resources/stuff.csv");
+        super.beforeEach();
     }
 
     @Test

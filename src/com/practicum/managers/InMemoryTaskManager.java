@@ -12,7 +12,8 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    HistoryManager searchHistory = Managers.getDefaultHistory();
+    Managers managerHistory = new Managers();
+    HistoryManager searchHistory = managerHistory.getDefaultHistory();
 
     public HashMap<Integer, Task> taskMap = new HashMap<>();
     public HashMap<Integer, Epic> epicMap = new HashMap<>();
@@ -21,22 +22,6 @@ public class InMemoryTaskManager implements TaskManager {
     public TreeSet<Task> tasksTree = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     int id = 0;
-
-    @Override
-    public void printMenu() {
-        System.out.println("Введите нужную цифру");
-        System.out.println("1 - Создать новую задачу");
-        System.out.println("2 - Создать новый эпик с подзадачами");
-        System.out.println("3 - Просмотреть все задачи по категориям");
-        System.out.println("4 - Удалить все задачи в категории");
-        System.out.println("5 - Найти задачу по идентификатору");
-        System.out.println("6 - Удалить задачу по идентификатору");
-        System.out.println("7 - Обновить задачу по идентификатору");
-        System.out.println("8 - Просмотреть подзадачи конкретного эпика");
-        System.out.println("9 - Просмотреть историю поиска задач");
-        System.out.println("10 - Просмотреть список всех задач по приоритету");
-        System.out.println("0 - Выйти из программы");
-    }
 
     @Override
     public void createTask(String name, String description, long duration, String date) {
@@ -256,8 +241,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void showSearchHistory() {
-        System.out.println(searchHistory.getHistory());
+    public List<Task> showSearchHistory() {
+        return searchHistory.getHistory();
     }
 
     @Override

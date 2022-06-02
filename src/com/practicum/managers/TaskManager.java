@@ -2,6 +2,8 @@ package com.practicum.managers;
 
 import com.practicum.tasks.Task;
 
+import java.util.List;
+
 public interface TaskManager {
 
     void updateTask(int id, String status);
@@ -10,15 +12,13 @@ public interface TaskManager {
 
     void showSubs(int i);
 
-    void printMenu();
-
     Task searchForTask(int i);
 
     void showEverything();
 
     void clearCategory(int i);
 
-    void showSearchHistory();
+    List<Task> showSearchHistory();
 
     void addToHistory(Task task);
 

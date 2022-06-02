@@ -4,33 +4,25 @@ import com.practicum.tasks.Epic;
 import com.practicum.tasks.Subtask;
 import com.practicum.tasks.Task;
 import com.practicum.tasks.TaskTypes;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
-class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
 
-    private T tm;
+    protected T tm;
 
     @BeforeEach
     public void beforeEach() {
-        tm = (T) new InMemoryTaskManager();
-    }
-
-    @AfterEach
-    public void afterEach() {
-        tm.clearCategory(1);
-        tm.clearCategory(2);
-        tm.clearCategory(3);
+        tm.createTask("t1", "d1", 10, "01.01.2010 00:00");
     }
 
     @Test
     void shouldUpdateTask() {
-        tm.createTask("t1", "d1", 10, "01.01.2010 00:00");
         tm.updateTask(0, "выполнено");
         Task task = tm.searchForTask(0);
         Assertions.assertEquals(Status.DONE.getStatus(), task.getStatus());
@@ -38,20 +30,17 @@ class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void shouldSearchAndDelete() {
-        tm.createTask("t1", "d1", 10, "01.01.2010 00:00");
         tm.searchAndDelete(0);
         Assertions.assertNull(tm.searchForTask(0));
     }
 
     @Test
     void shouldSearchForTask() {
-        tm.createTask("t1", "d1", 10, "01.01.2010 00:00");
         Assertions.assertNotNull(tm.searchForTask(0));
     }
 
     @Test
     void shouldClearCategory() {
-        tm.createTask("t1", "d1", 10, "01.01.2010 00:00");
         tm.createTask("t2", "d2", 10, "02.01.2010 00:00");
         tm.clearCategory(1);
         Assertions.assertNull(tm.searchForTask(0));
@@ -64,7 +53,6 @@ class TaskManagerTest<T extends TaskManager> {
         taskToTest.setStartTime(LocalDateTime.of(2010,1,1,0,0));
         taskToTest.setDuration(Duration.ofMinutes(10));
 
-        tm.createTask("t1", "d1", 10, "01.01.2010 00:00");
         Task task = tm.searchForTask(0);
         LocalDateTime endTime = task.getEndTime();
         Assertions.assertNotNull(task, "Task not found");
@@ -77,38 +65,38 @@ class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void shouldCreateEpicAndSubtaskAndAddEpicDurationAndDateAndCheckEpicsEndTime() {
-        Epic epicToTest = new Epic("e1", "e1", 0, "новое", TaskTypes.EPIC);
-        Subtask subToTest = new Subtask("s1", "s1", 1, "новое",
+        Epic epicToTest = new Epic("e1", "e1", 1, "новое", TaskTypes.EPIC);
+        Subtask subToTest = new Subtask("s1", "s1", 2, "новое",
                 TaskTypes.SUBTASK, 0);
-        epicToTest.setStartTime(LocalDateTime.of(2010,1,1,0,0));
+        epicToTest.setStartTime(LocalDateTime.of(2011,1,1,0,0));
         epicToTest.setDuration(Duration.ofMinutes(10));
-        epicToTest.setEndDate(LocalDateTime.of(2010,1,1,0,10));
-        subToTest.setStartTime(LocalDateTime.of(2010,1,1,0,0));
+        epicToTest.setEndDate(LocalDateTime.of(2011,1,1,0,10));
+        subToTest.setStartTime(LocalDateTime.of(2011,1,1,0,0));
         subToTest.setDuration(Duration.ofMinutes(10));
 
         tm.createEpic("e1", "e1", 0, "01.01.1970 00:00");
-        tm.createSubtask("s1", "s1", 10, "01.01.2010 00:00");
+        tm.createSubtask("s1", "s1", 10, "01.01.2011 00:00");
         tm.addEpicDuration(10);
-        tm.addEpicStartTime("01.01.2010 00:00");
+        tm.addEpicStartTime("01.01.2011 00:00");
         tm.addEpicEndTime();
-        Epic epic = (Epic) tm.searchForTask(0);
-        Subtask sub = (Subtask) tm.searchForTask(1);
+        Epic epic = (Epic) tm.searchForTask(1);
+        Subtask sub = (Subtask) tm.searchForTask(2);
         Assertions.assertNotNull(epic, "Epic not found");
         Assertions.assertNotNull(sub, "Sub not found");
         Assertions.assertEquals(epicToTest, epic, "Epics are not equal");
         Assertions.assertEquals(subToTest, sub, "Subs are not equal");
         Assertions.assertEquals(epicToTest.getStartTime(), epic.getStartTime());
         Assertions.assertEquals(epicToTest.getDuration(), epic.getDuration());
-        Assertions.assertEquals(LocalDateTime.of(2010,1,1,0,10),
+        Assertions.assertEquals(LocalDateTime.of(2011,1,1,0,10),
                 epic.getEndDate(), "End times are not equal");
         Assertions.assertEquals(subToTest.getStartTime(), sub.getStartTime());
         Assertions.assertEquals(subToTest.getDuration(), sub.getDuration());
-        Assertions.assertEquals(LocalDateTime.of(2010,1,1,0,10),
+        Assertions.assertEquals(LocalDateTime.of(2011,1,1,0,10),
                 sub.getEndTime(), "End times are not equal");
     }
 
     @Test
-    void addToTreeAndCheckValidity() {
+    void shouldAddToTreeAndCheckValidity() {
         Task taskToTest1 = new Task("t1", "d1", 0, "новое", TaskTypes.TASK);
         taskToTest1.setStartTime(LocalDateTime.of(2010,1,1,0,0));
         taskToTest1.setDuration(Duration.ofMinutes(10));
@@ -123,5 +111,14 @@ class TaskManagerTest<T extends TaskManager> {
         Assertions.assertEquals(taskToTest1, tm.searchForTask(0));
         Assertions.assertEquals(taskToTest2, tm.searchForTask(1));
         Assertions.assertNull(tm.searchForTask(2));
+    }
+
+    @Test
+    void shouldAddToHistoryAndGetSearchHistory() {
+        tm.createTask("t2", "d2", 11, "03.01.2010 00:00");
+        tm.addToHistory(tm.searchForTask(0));
+        tm.addToHistory(tm.searchForTask(1));
+        tm.addToHistory(tm.searchForTask(0));
+        Assertions.assertEquals(List.of(tm.searchForTask(1), tm.searchForTask(0)), tm.showSearchHistory());
     }
 }

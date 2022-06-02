@@ -1,5 +1,7 @@
 package com.practicum.managers;
 
+import com.practicum.tasks.Epic;
+import com.practicum.tasks.Subtask;
 import com.practicum.tasks.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -15,16 +17,18 @@ class HistoryManagerTest {
     @BeforeEach
     public void beforeEach() {
         tm = new InMemoryTaskManager();
+        tm.createTask("t1", "d1", 2,"01.01.2020 00:00");
     }
 
     @AfterEach
     public void afterEach() {
         tm.clearCategory(1);
+        tm.clearCategory(2);
+        tm.clearCategory(3);
     }
 
     @Test
     void shouldAddWhenEmptyAndGetHistory() {
-        tm.createTask("t1", "d1", 2,"01.01.2020 00:00");
         Task task = tm.taskMap.get(0);
         tm.searchHistory.add(task);
         List<Task> tList = tm.searchHistory.getHistory();
@@ -35,7 +39,6 @@ class HistoryManagerTest {
 
     @Test
     void shouldAddWhenDuplicateAndGetHistory() {
-        tm.createTask("t1", "d1", 2,"01.01.2020 00:00");
         Task task = tm.taskMap.get(0);
         tm.searchHistory.add(task);
         tm.searchHistory.add(task);
@@ -47,12 +50,11 @@ class HistoryManagerTest {
 
     @Test
     void shouldRemoveFirstAndGetHistory() {
-        tm.createTask("t1", "d1", 2,"01.01.2020 00:00");
-        tm.createTask("t2", "d2", 2,"02.01.2020 00:00");
-        tm.createTask("t3", "d3", 2,"03.01.2020 00:00");
+        tm.createEpic("t2", "d2", 2,"02.01.2020 00:00");
+        tm.createSubtask("t3", "d3", 2,"03.01.2020 00:00");
         Task task0 = tm.taskMap.get(0);
-        Task task1 = tm.taskMap.get(1);
-        Task task2 = tm.taskMap.get(2);
+        Epic task1 = tm.epicMap.get(1);
+        Subtask task2 = tm.subMap.get(2);
         tm.searchHistory.add(task0);
         tm.searchHistory.add(task1);
         tm.searchHistory.add(task2);
@@ -72,12 +74,11 @@ class HistoryManagerTest {
 
     @Test
     void shouldRemoveMidAndGetHistory() {
-        tm.createTask("t1", "d1", 2,"01.01.2020 00:00");
-        tm.createTask("t2", "d2", 2,"02.01.2020 00:00");
-        tm.createTask("t3", "d3", 2,"03.01.2020 00:00");
+        tm.createEpic("t2", "d2", 2,"02.01.2020 00:00");
+        tm.createSubtask("t3", "d3", 2,"03.01.2020 00:00");
         Task task0 = tm.taskMap.get(0);
-        Task task1 = tm.taskMap.get(1);
-        Task task2 = tm.taskMap.get(2);
+        Epic task1 = tm.epicMap.get(1);
+        Subtask task2 = tm.subMap.get(2);
         tm.searchHistory.add(task0);
         tm.searchHistory.add(task1);
         tm.searchHistory.add(task2);
@@ -97,12 +98,11 @@ class HistoryManagerTest {
 
     @Test
     void shouldRemoveLastAndGetHistory() {
-        tm.createTask("t1", "d1", 2,"01.01.2020 00:00");
-        tm.createTask("t2", "d2", 2,"02.01.2020 00:00");
-        tm.createTask("t3", "d3", 2,"03.01.2020 00:00");
+        tm.createEpic("t2", "d2", 2,"02.01.2020 00:00");
+        tm.createSubtask("t3", "d3", 2,"03.01.2020 00:00");
         Task task0 = tm.taskMap.get(0);
-        Task task1 = tm.taskMap.get(1);
-        Task task2 = tm.taskMap.get(2);
+        Epic task1 = tm.epicMap.get(1);
+        Subtask task2 = tm.subMap.get(2);
         tm.searchHistory.add(task0);
         tm.searchHistory.add(task1);
         tm.searchHistory.add(task2);
@@ -122,7 +122,6 @@ class HistoryManagerTest {
 
     @Test
     void shouldContainTask() {
-        tm.createTask("t1", "d1", 2,"01.01.2020 00:00");
         Task task = tm.taskMap.get(0);
         tm.searchHistory.add(task);
         boolean testBoolean = tm.searchHistory.containsTask(0);

@@ -6,12 +6,13 @@ public class Practicum {
 
     public static void main(String[] args) {
 
-        TaskManager taskManager = Managers.getDefault();
+        Managers manager = new Managers();
+        TaskManager taskManager = manager.getDefault();
 
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            taskManager.printMenu();
+            Menu.printMenu();
             int command = scanner.nextInt();
             switch (command) {
                 case 1:
@@ -116,7 +117,7 @@ public class Practicum {
                     taskManager.showSubs(command6);
                     break;
                 case 9:
-                    taskManager.showSearchHistory();
+                    System.out.println(taskManager.showSearchHistory());
                     break;
                 case 10:
                     taskManager.getPrioritizedTasks();
@@ -128,4 +129,23 @@ public class Practicum {
             }
         }
     }
+}
+
+class Menu {
+
+    protected static void printMenu() {
+        System.out.println("Введите нужную цифру");
+        System.out.println("1 - Создать новую задачу");
+        System.out.println("2 - Создать новый эпик с подзадачами");
+        System.out.println("3 - Просмотреть все задачи по категориям");
+        System.out.println("4 - Удалить все задачи в категории");
+        System.out.println("5 - Найти задачу по идентификатору");
+        System.out.println("6 - Удалить задачу по идентификатору");
+        System.out.println("7 - Обновить задачу по идентификатору");
+        System.out.println("8 - Просмотреть подзадачи конкретного эпика");
+        System.out.println("9 - Просмотреть историю поиска задач");
+        System.out.println("10 - Просмотреть список всех задач по приоритету");
+        System.out.println("0 - Выйти из программы");
+    }
+
 }
