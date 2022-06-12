@@ -1,5 +1,7 @@
 package com.practicum.managers;
 
+import com.practicum.tasks.Epic;
+import com.practicum.tasks.Subtask;
 import com.practicum.tasks.Task;
 
 import java.util.List;
@@ -10,11 +12,15 @@ public interface TaskManager {
 
     void searchAndDelete(int i);
 
-    void showSubs(int i);
+    List<Subtask> showSubs(int i);
 
     Task searchForTask(int i);
 
-    void showEverything();
+    List<Task> showAllTasks();
+
+    List<Epic> showAllEpics();
+
+    List<Subtask> showAllSubs();
 
     void clearCategory(int i);
 
@@ -38,6 +44,6 @@ public interface TaskManager {
 
     void addToTree(Task task);
 
-    void getPrioritizedTasks();
+    List<Task> getPrioritizedTasks();
 
 }

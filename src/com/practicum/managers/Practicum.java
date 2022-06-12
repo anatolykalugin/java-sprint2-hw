@@ -1,6 +1,6 @@
 package com.practicum.managers;
 
-import java.util.Scanner;
+/*import java.util.Scanner;
 
 public class Practicum {
 
@@ -58,7 +58,9 @@ public class Practicum {
                     }
                     break;
                 case 3:
-                    taskManager.showEverything();
+                    System.out.println("Список задач: " + taskManager.showAllTasks());
+                    System.out.println("Список эпиков: " + taskManager.showAllEpics());
+                    System.out.println("Список подзадач: " + taskManager.showAllSubs());
                     break;
                 case 4:
                     System.out.println("Какую категорию вы хотите очистить?");
@@ -114,13 +116,13 @@ public class Practicum {
                 case 8:
                     System.out.println("Введите идентификатор эпика:");
                     int command6 = scanner.nextInt();
-                    taskManager.showSubs(command6);
+                    System.out.println(taskManager.showSubs(command6));
                     break;
                 case 9:
                     System.out.println(taskManager.showSearchHistory());
                     break;
                 case 10:
-                    taskManager.getPrioritizedTasks();
+                    System.out.println(taskManager.getPrioritizedTasks());
                     break;
                 case 0:
                     return;
@@ -129,7 +131,7 @@ public class Practicum {
             }
         }
     }
-}
+}*/
 
 class Menu {
 

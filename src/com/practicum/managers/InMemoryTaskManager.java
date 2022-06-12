@@ -127,19 +127,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void showEverything() {
-        System.out.println("Список задач:");
-        for (Integer i : taskMap.keySet()) {
-            System.out.println(taskMap.get(i));
-        }
-        System.out.println("Список эпиков:");
-        for (Integer i : epicMap.keySet()) {
-            System.out.println(epicMap.get(i));
-        }
-        System.out.println("Список подзадач:");
-        for (Integer i : subMap.keySet()) {
-            System.out.println(subMap.get(i));
-        }
+    public List<Task> showAllTasks() {
+        return new ArrayList<>(taskMap.values());
+    }
+
+    @Override
+    public List<Epic> showAllEpics() {
+        return new ArrayList<>(epicMap.values());
+    }
+
+    @Override
+    public List<Subtask> showAllSubs() {
+        return new ArrayList<>(subMap.values());
     }
 
     @Override
@@ -196,9 +195,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void showSubs(int i) {
+    public List<Subtask> showSubs(int i) {
         if (epicTasks.containsKey((Epic) searchForTask(i))) {
-            System.out.println(epicTasks.get((Epic) searchForTask(i)));
+            return epicTasks.get((Epic) searchForTask(i));
+        } else {
+            return List.of();
         }
     }
 
@@ -285,11 +286,9 @@ public class InMemoryTaskManager implements TaskManager {
         tasksTree.add(task);
     }
 
-    public void getPrioritizedTasks() {
+    public List<Task> getPrioritizedTasks() {
         System.out.println("Список задач по приоритету: ");
-        for (Task task : tasksTree) {
-            System.out.println(task);
-        }
+        return new ArrayList<>(tasksTree);
     }
 
     public boolean timeIsValid(Task task) {
