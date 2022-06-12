@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.practicum.managers.adapters.DurationAdapter;
 import com.practicum.managers.adapters.LDTTypeAdapter;
+import com.practicum.managers.http.HttpTaskManager;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -12,8 +14,8 @@ public class Managers {
 
     public HistoryManager searchHistory = new InMemoryHistoryManager();
 
-    public TaskManager getDefault() {
-        return new FileBackedTasksManager("resources/stuff.csv");
+    public TaskManager getDefault() throws IOException, InterruptedException {
+        return new HttpTaskManager("http://localhost:8078");
     }
 
     public HistoryManager getDefaultHistory() {

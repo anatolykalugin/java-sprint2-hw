@@ -11,10 +11,13 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    private final String filePath;
+    private String filePath;
 
     public FileBackedTasksManager(String filePath) {
         this.filePath = filePath;
+    }
+
+    public FileBackedTasksManager() {
     }
 
     private final CSVTaskSerializator serializator = new CSVTaskSerializator();
@@ -83,7 +86,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-    private void save() {
+    protected void save() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             bw.append(CSVTaskSerializator.getHeader());
             bw.newLine();

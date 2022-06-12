@@ -30,7 +30,7 @@ public class HttpTaskServer {
 
     Managers manager = new Managers();
 
-    public HttpTaskServer() throws IOException {
+    public HttpTaskServer() throws IOException, InterruptedException {
         taskManager = manager.getDefault();
         gson = manager.getGson();
         server = HttpServer.create();
@@ -38,7 +38,6 @@ public class HttpTaskServer {
         server.createContext("/tasks", this::handler);
         server.start();
         System.out.println("Сервер запущен на " + PORT + " порту!");
-        // server.stop(1);
     }
 
     private void handler(HttpExchange h) throws IOException {
@@ -141,10 +140,8 @@ public class HttpTaskServer {
                             if (path.endsWith("/task") || path.endsWith("/task/")) {
                                 System.out.println("Началась обработка POST /tasks/task от клиента.");
                                 Task task1 = gson.fromJson(body, Task.class);
-                                System.out.println("таск есть, но добавлен ли он?");
                                 taskManager.createTask(task1.getName(), task1.getDescription(),
                                         task1.getDuration().toMinutes(), task1.getStartTime().format(formatter));
-                                System.out.println("добавлен, заебись");
                                 h.sendResponseHeaders(200, 0);
                                 String response = "Действие выполнено";
                                 try (OutputStream os = h.getResponseBody()) {
@@ -284,7 +281,7 @@ public class HttpTaskServer {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         HttpTaskServer httpTaskServer = new HttpTaskServer();
     }
 }
