@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.practicum.kvserver.KVServer;
 import com.practicum.managers.Managers;
 import com.practicum.managers.TaskManager;
 import com.practicum.tasks.Epic;
@@ -36,8 +37,6 @@ public class HttpTaskServer {
         server = HttpServer.create();
         server.bind(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks", this::handler);
-        server.start();
-        System.out.println("Сервер запущен на " + PORT + " порту!");
     }
 
     private void handler(HttpExchange h) throws IOException {
@@ -62,6 +61,7 @@ public class HttpTaskServer {
                             String[] querySplit = query.split("=");
                             int neededId = Integer.parseInt(querySplit[1]);
                             if (taskManager.searchForTask(neededId) != null) {
+                                taskManager.addToHistory(taskManager.searchForTask(neededId));
                                 h.sendResponseHeaders(200, 0);
                                 String response = "Нашли такую задачу: " + gson.toJson(taskManager
                                         .searchForTask(neededId));
@@ -84,7 +84,8 @@ public class HttpTaskServer {
                         try (OutputStream os = h.getResponseBody()) {
                             os.write(response.getBytes());
                         }
-                    } else if (path.endsWith("/subtask/epic/") && (query != null)) {
+                    } else if ((path.endsWith("/subtask/epic/")) || (path.endsWith("/subtask/epic"))
+                            && (query != null)) {
                         System.out.println("Началась обработка GET /tasks/subtask/epic/?id=x от клиента.");
                         String[] querySplit = query.split("=");
                         int neededId = Integer.parseInt(querySplit[1]);
@@ -142,7 +143,7 @@ public class HttpTaskServer {
                                 Task task1 = gson.fromJson(body, Task.class);
                                 taskManager.createTask(task1.getName(), task1.getDescription(),
                                         task1.getDuration().toMinutes(), task1.getStartTime().format(formatter));
-                                h.sendResponseHeaders(200, 0);
+                                h.sendResponseHeaders(201, 0);
                                 String response = "Действие выполнено";
                                 try (OutputStream os = h.getResponseBody()) {
                                     os.write(response.getBytes());
@@ -153,7 +154,7 @@ public class HttpTaskServer {
                                 taskManager.createEpic(epic1.getName(), epic1.getDescription(),
                                         epic1.getDuration().toMinutes(), epic1.getStartTime().format(formatter));
                                 String response = "Действие выполнено";
-                                h.sendResponseHeaders(200, 0);
+                                h.sendResponseHeaders(201, 0);
                                 try (OutputStream os = h.getResponseBody()) {
                                     os.write(response.getBytes());
                                 }
@@ -163,7 +164,10 @@ public class HttpTaskServer {
                                 taskManager.createSubtask(sub1.getName(), sub1.getDescription(),
                                         sub1.getDuration().toMinutes(), sub1.getStartTime().format(formatter));
                                 String response = "Действие выполнено";
-                                h.sendResponseHeaders(200, 0);
+                                taskManager.addEpicStartTime(sub1.getStartTime().format(formatter));
+                                taskManager.addEpicDuration(sub1.getDuration().toMinutes());
+                                taskManager.addEpicEndTime();
+                                h.sendResponseHeaders(201, 0);
                                 try (OutputStream os = h.getResponseBody()) {
                                     os.write(response.getBytes());
                                 }
@@ -184,7 +188,7 @@ public class HttpTaskServer {
                                 if (taskManager.searchForTask(neededId) != null) {
                                     taskManager.updateTask(neededId, jo.get("status").getAsString());
                                     String response = "Задача успешно обновлена";
-                                    h.sendResponseHeaders(200, 0);
+                                    h.sendResponseHeaders(201, 0);
                                     try (OutputStream os = h.getResponseBody()) {
                                         os.write(response.getBytes());
                                     }
@@ -281,8 +285,20 @@ public class HttpTaskServer {
         }
     }
 
+    public void start() {
+        System.out.println("Сервер запущен на " + PORT + " порту!");
+        server.start();
+    }
+
+    public void stop() {
+        server.stop(1);
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
+        KVServer kvServer = new KVServer();
+        kvServer.start();
         HttpTaskServer httpTaskServer = new HttpTaskServer();
+        httpTaskServer.start();
     }
 }
 

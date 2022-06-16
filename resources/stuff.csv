@@ -1,2 +1,7 @@
 id,type,name,status,description,duration,startTime,epic
+0,TASK,t1,d1,новое,10,01.01.2010 00:00
+1,TASK,t1,d1,новое,10,01.01.2010 10:10
+2,EPIC,e1,e1,новое,10,02.01.2010 10:10
+3,SUBTASK,t1,d1,новое,10,02.01.2010 10:10,2
 search history:
+1,3,2

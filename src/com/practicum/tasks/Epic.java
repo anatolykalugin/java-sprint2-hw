@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Epic extends Task {
 
-    private LocalDateTime endDate;
+    private LocalDateTime endDate = LocalDateTime.of(1970, 1,1,0,1);
 
     public Epic(String name, String description, int id, String status, TaskTypes type) {
         super(name, description, id, status, type);

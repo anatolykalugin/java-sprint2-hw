@@ -6,20 +6,17 @@ import com.practicum.managers.adapters.DurationAdapter;
 import com.practicum.managers.adapters.LDTTypeAdapter;
 import com.practicum.managers.http.HttpTaskManager;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Managers {
 
-    public HistoryManager searchHistory = new InMemoryHistoryManager();
-
-    public TaskManager getDefault() throws IOException, InterruptedException {
+    public TaskManager getDefault() {
         return new HttpTaskManager("http://localhost:8078");
     }
 
     public HistoryManager getDefaultHistory() {
-        return searchHistory;
+        return new InMemoryHistoryManager();
     }
 
     public Gson getGson() {

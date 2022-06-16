@@ -12,8 +12,7 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    Managers managerHistory = new Managers();
-    HistoryManager searchHistory = managerHistory.getDefaultHistory();
+    public HistoryManager searchHistory = new Managers().getDefaultHistory();
 
     public HashMap<Integer, Task> taskMap = new HashMap<>();
     public HashMap<Integer, Epic> epicMap = new HashMap<>();
@@ -275,7 +274,7 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime endDate = searchForTask(id - 1).getEndTime();
         LocalDateTime currentEpicDate = ((Epic) searchForTask(((Subtask) searchForTask(id - 1))
                 .getEpicLinkId())).getEndDate();
-        if (currentEpicDate == null) {
+        if (currentEpicDate.isEqual(LocalDateTime.of(1970,1,1,0,1))) {
             ((Epic) searchForTask(((Subtask) searchForTask(id - 1)).getEpicLinkId())).setEndDate(endDate);
         } else if (currentEpicDate.isBefore(endDate)) {
             ((Epic) searchForTask(((Subtask) searchForTask(id - 1)).getEpicLinkId())).setEndDate(endDate);
