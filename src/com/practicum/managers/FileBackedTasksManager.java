@@ -63,9 +63,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public Task searchForTask(int i) {
-        Task task = super.searchForTask(i);
-        save();
-        return task;
+        return super.searchForTask(i);
     }
 
     @Override

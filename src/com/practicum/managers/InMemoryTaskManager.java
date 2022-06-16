@@ -195,7 +195,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> showSubs(int i) {
-        if (epicTasks.containsKey((Epic) searchForTask(i))) {
+        if (epicTasks.containsKey(searchForTask(i))) {
             return epicTasks.get((Epic) searchForTask(i));
         } else {
             return List.of();

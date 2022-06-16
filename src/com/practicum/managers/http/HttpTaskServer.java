@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.practicum.kvserver.KVServer;
 import com.practicum.managers.Managers;
 import com.practicum.managers.TaskManager;
 import com.practicum.tasks.Epic;
@@ -294,11 +293,4 @@ public class HttpTaskServer {
         server.stop(1);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        KVServer kvServer = new KVServer();
-        kvServer.start();
-        HttpTaskServer httpTaskServer = new HttpTaskServer();
-        httpTaskServer.start();
-    }
 }
-
